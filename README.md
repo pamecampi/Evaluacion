@@ -1,13 +1,44 @@
+# Temperatura Superficial del Mar (SST) en la Costa de Brasil
+
+Este repositorio contiene un script en **Python** que procesa archivos **NetCDF** con datos de temperatura superficial del mar (SST) provenientes del producto **GHRSST – REMSS L4**.  
+El objetivo es realiar ejercicios de generación de mapas comparativos de SST en la costa de Brasil para los meses de mayo, junio, julio y agosto del año 2025.
+
+---
+
+## Descripción del ejercicio
+
+El código realiza los siguientes pasos:
+
+1. Abre múltiples archivos `.nc` correspondiente al día 29 de los meses entre mayo a agosto de 2025.  
+2. Extrae la variable `analysed_sst` de cada uno de los datasets y convierte la temperatura de **Kelvin a grados Celsius (°C)**.  
+3. Selecciona la región de interés que cubre la costa de **Brasil** (longitudes de `-60°` a `-20°`, latitudes de `-40°` a `10°`).  
+4. Genera mapas usando: 
+   - `pcolormesh` : para representar la distribución espacial de SST.
+   - `contourf` : para representar isolíneas de temperatura.
+5. Crea mapas comparativos en una cuadrícula 2x2 con barras de color y escala térmica uniforme.
+
+---
+
+## 🧰 Requisitos
+
+Antes de ejecutar el script, asegúrate de tener instaladas las siguientes librerías de Python:
+
+```bash
+pip install xarray matplotlib cartopy cmocean netCDF4 numpy
+
 # Evaluacion
 Código sobre SST en la costa de Brasil
 Aquí voy a desarrollar el código para generar los mapas de temperatura superfial del mar en 4 días de los meses de mayo, junio, julio y agosto de 2025.
-import xarray as xr
-import matplotlib.pyplot as plt
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-import cmocean
-import numpy as np
-import calendar
+
+#importar las librerías necesarias para el ejercicio:
+
+import xarray as xr  
+import matplotlib.pyplot as plt  
+import cartopy.crs as ccrs  
+import cartopy.feature as cfeature  
+import cmocean  
+import numpy as np  
+import calendar  
 
 # Rutas de los archivos descargados guardados en mi computadora (fechas del día 29 de los meses de mayo, junio, julio y agosto del 2025)
 archivos = [
@@ -15,38 +46,26 @@ archivos = [
     '20250629120000-REMSS-L4_GHRSST-SSTfnd-MW_IR_OI-GLOB-v02.0-fv05.1.nc',
     '20250729120000-REMSS-L4_GHRSST-SSTfnd-MW_IR_OI-GLOB-v02.0-fv05.1.nc',
     '20250829120000-REMSS-L4_GHRSST-SSTfnd-MW_IR_OI-GLOB-v02.0-fv05.1.nc'
-]
-#Para ejecutar usando pcolormesh
-fig, axes = plt.subplots(2, 2, figsize=(12, 8))
-axes = axes.flatten()  # convierte la matriz de ejes en una lista
+]  
+
+###Para ejecutar usando pcolormesh  
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))  
+axes = axes.flatten()  
+
 
 for i, archivo in enumerate(archivos):
-    # Abrir dataset
     ds = xr.open_dataset(archivo)
-    
-    # Seleccionar SST y primer tiempo
-    sst = ds['analysed_sst'].isel(time=0) - 273.15  # Convertir a °C
-    
-    # Filtrar región de Brasil
+    sst = ds['analysed_sst'].isel(time=0) - 273.15
     sst_brasil = sst.sel(lon=slice(-60, -20), lat=slice(-40, 10))
-    
-    # Extraer coordenadas
     lon = sst_brasil.lon
     lat = sst_brasil.lat
-    
     fecha = np.datetime_as_string(ds["time"].values[0], unit='D')
     mes_num = int(fecha[5:7])
     mes_nombre = calendar.month_name[mes_num]
-    
-    # Graficar en su subplot
     im = axes[i].pcolormesh(lon, lat, sst_brasil, cmap=cmocean.cm.thermal)
-    
-    # Título con la fecha (extraída del nombre)
-    axes[i].set_title(f"SST {archivo[0:8]}", fontsize=10)
+    axes[i].set_title(f"SST {archivo[0:8]}", fontsize=10) 
     axes[i].set_xlabel("Longitud")
     axes[i].set_ylabel("Latitud")
-    
-    # Barra de color individual
     cbar = plt.colorbar(im, ax=axes[i])
     cbar.set_label("SST (°C)")
 
@@ -54,7 +73,6 @@ for i, archivo in enumerate(archivos):
 plt.suptitle("Comparação da SST na costa do Brasil entre maio e agosto 2025 ", fontsize=14)
 plt.tight_layout()
 plt.show()
-
 
 #Ahora ejecuto usando contourf
 
@@ -64,21 +82,13 @@ axs = axs.flatten()
 
 for i, archivo in enumerate(archivos):
     ds = xr.open_dataset(archivo)
-    
-    # Seleccionar la variable SST y primer tiempo
-    sst = ds["analysed_sst"].isel(time=0) - 273.15  # Convertir a °C
-    
-    # Filtrar la región de Brasil
+    sst = ds["analysed_sst"].isel(time=0) - 273.15 
     sst_brasil = sst.sel(lon=slice(-60, -20), lat=slice(-40, 10))
-    
     lon = sst_brasil.lon
     lat = sst_brasil.lat
-    
-    # Extraer el mes desde la variable time
     fecha = np.datetime_as_string(ds["time"].values[0], unit='D')
     mes_num = int(fecha[5:7])
-    mes_nombre = calendar.month_name[mes_num]  # En inglés
-    # Si quieres en español, usar: meses = ["enero","febrero",...]; mes_nombre = meses[mes_num-1]
+    mes_nombre = calendar.month_name[mes_num]
     
     # Graficar con contourf
     cf = axs[i].contourf(lon, lat, sst_brasil, levels=20, cmap=cmocean.cm.thermal)
