@@ -16,16 +16,9 @@ El código realiza los siguientes pasos:
 5. Crea mapas comparativos en una cuadrícula 2x2 con barras de color y escala térmica uniforme.
 
 ---
-
-Escribir sobre las librerías que usa.
-Por qué usar pcolormesh y por qué contourf
-Por qué no se saca el promedio y sólo la comparación entre días
-Hacer el pequeño análisis de las diferencias de las temperaturas tomando como referencia las noticas que circulaban en Brasil durante esos meses.
-
-
----
 ## Metodología
-Para realizar este ejercicio se tomó la fuente de datos de .....
+Para realizar este ejercicio se tomó la fuente de datos de temperatura superficial del mar provinientes del Remote Sensing Systems (RSS), diponibles en el siguiente enlace: data.remss.com. 
+
 Las principales librerías utilizadas fueron:
 
 - `xarray` : para abrir y manipular archivos NetCDF  
@@ -47,7 +40,20 @@ Y se sigue el siguiente proceso:
 
 ---
 ## Resultados
-La comparación muestra un aumento progresivo de la temperatura superficial del mar entre mayo y agosto de 2025, especialmente en el noreste de Brasil.
-La escala de colores va desde ~22°C a 28°C, lo que permite identificar variaciones térmicas costeras y oceánicas. 
-   
+La comparación muestra un aumento progresivo de la temperatura superficial del mar entre mayo y agosto de 2025, especialmente en el noreste de Brasil con una esacala entre 22 a 28°C; mientras que en la zona costera del sur del país las temperatuas son más frías, entre 7 y 12 °C.
+La barra de colores permite identificar variaciones térmicas costeras y oceánicas como se puede observar en el mapa a continuación:
 
+![Mapa de temperatura superficial del mar](./SST_Brasil.png) 
+
+Mapa1: comparación de temperatuas en la costa de Brasil entre mayo y agosto del 2025
+
+
+ ---
+## Discusión
+Los resultados obtenidos en este ejercicio permite observar el cambio en la temperatura superficial del mar a finales de los meses de mayo, junio, julio y agosto. Se tomó apenas un día para cada mes debido a la limitación del tamaño de datos y para realizar el ejercicio con más pradcticidad. Lo ideal hubiera sido obtener el promedio mensual para hacer un análisis adecuado; sin embargo el ejercicio desarrollado representa bastante bien las condiciones que fueron caraterísticas en Brasil durante esos meses.
+
+ ---
+## Conclusiones
+- El código permite realizar una visualización rápida de los cambios espacio-temporales de SST.
+- Puede adaptarse fácilmente para analizar otras variables ambientales (como salinidad o clorofila).
+- El uso de xarray y cartopy facilita el manejo de grandes volúmenes de datos satelitales.
